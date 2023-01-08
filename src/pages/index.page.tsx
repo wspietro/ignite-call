@@ -1,5 +1,4 @@
-import { Heading } from '@ignite-ui/react'
+// reexportação do arquivo home
+// trabalhando na home com arquivo separado da pasta
 
-export default function Home() {
-  return <Heading as="h1"> Hello Ignite Call</Heading>
-}
+export { default } from './home'
