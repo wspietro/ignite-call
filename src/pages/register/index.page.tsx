@@ -3,6 +3,12 @@ import { ArrowRight } from 'phosphor-react'
 import { Container, Form, Header } from './style'
 
 export default function Register() {
+  const {
+    register,
+    handleSumbit,
+    formState: { errors, isSubmitting },
+  } = useForm()
+
   return (
     <Container>
       <Header>

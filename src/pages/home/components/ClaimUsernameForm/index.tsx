@@ -15,18 +15,18 @@ const claimUsernameFormSchema = z.object({
 
 // convertendo estrutura do zod (object, username e string) para uma estrutura do typeScript;
 // inferir (definir de forma automática) o tipo dos dados dentro do form.
-type ClainUsernameFormData = z.infer<typeof claimUsernameFormSchema>
+type ClaimUsernameFormData = z.infer<typeof claimUsernameFormSchema>
 
-export function ClainUsernameForm() {
+export function ClaimUsernameForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ClainUsernameFormData>({
+  } = useForm<ClaimUsernameFormData>({
     resolver: zodResolver(claimUsernameFormSchema),
   })
 
-  async function handleClaimUsername(data: ClainUsernameFormData) {
+  async function handleClaimUsername(data: ClaimUsernameFormData) {
     console.log(data)
   }
 
