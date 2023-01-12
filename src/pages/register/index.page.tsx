@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { api } from '../../lib/axios'
-import { Container, Form, FormError, Header } from './style'
+import { Container, Form, FormError, Header } from './styles'
 
 const registerFormSchema = z.object({
   username: z
@@ -18,26 +18,10 @@ const registerFormSchema = z.object({
   name: z
     .string()
     .min(3, { message: 'O nome deve conter ao menos 3 letras' })
-    .regex(/^([a-z]+)$/i, { message: 'somente letras' }),
+    .regex(/^[A-Za-z\s]*$/i, { message: 'somente letras' }),
 })
 
 type RegisterFormData = z.infer<typeof registerFormSchema>
-
-async function handleRegister(data: RegisterFormData) {
-  try {
-    await api.post('/users', {
-      name: data.name,
-      username: data.username,
-    })
-  } catch (err) {
-    if (err instanceof AxiosError && err?.response?.data?.message) {
-      alert(err.response.data.message)
-
-      return
-    }
-    console.error(err)
-  }
-}
 
 export default function Register() {
   const {
@@ -56,6 +40,24 @@ export default function Register() {
       setValue('username', String(router.query.username))
     }
   }, [setValue, router.query?.username])
+
+  async function handleRegister(data: RegisterFormData) {
+    try {
+      await api.post('/users', {
+        name: data.name,
+        username: data.username,
+      })
+
+      await router.push('/register/connect-calendar')
+    } catch (err) {
+      if (err instanceof AxiosError && err?.response?.data?.message) {
+        alert(err.response.data.message)
+
+        return
+      }
+      console.error(err)
+    }
+  }
 
   return (
     <Container>
