@@ -21,7 +21,9 @@ const registerFormSchema = z.object({
 
 type RegisterFormData = z.infer<typeof registerFormSchema>
 
-async function handleRegister(data: RegisterFormData) { }
+async function handleRegister(data: RegisterFormData) {
+  console.log(data)
+}
 
 export default function Register() {
   const {
