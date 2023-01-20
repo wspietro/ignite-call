@@ -44,6 +44,13 @@ export function buildNextAuthOptions(
 
         return true
       }, // funcao chamada assim que o usuário fez o login na aplicação (automaticamente)
+
+      async session({ session, user }) {
+        return {
+          ...session,
+          user,
+        }
+      },
     }, // funcoes chamadas em processos oportunos no processo de autenticacao
   }
 }
