@@ -46,7 +46,7 @@ model Account {
 
   user User @relation(fields: [user_id], references: [id], onDelete: Cascade)
 
-  @@unique([provider, provider_account_id])
+  @@unique([provider, provider_account_id]) // forma um campo único
   @@map("accounts") // renomear tabela
 }
 
