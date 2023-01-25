@@ -8,5 +8,9 @@ declare module 'next-auth' {
     email: string
     username: string
     avatar_url: string
+  } // ao declarar interfaces, não estamos subistituindo, interface por padrão tem comportamento de extensão
+
+  interface Session {
+    user: User
   }
 }

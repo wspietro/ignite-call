@@ -7,6 +7,18 @@
 import { unstable_getServerSession } from 'next-auth'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { buildNextAuthOptions } from '../auth/[...nextauth].api'
+import { z } from 'zod'
+import { prisma } from '../../../lib/prisma'
+
+const timeIntervalsBodySchema = z.object({
+  intervals: z.array(
+    z.object({
+      weekDay: z.number(),
+      startTimeInMinutes: z.number(),
+      endTimeInMinutes: z.number(),
+    }),
+  ),
+})
 
 export default async function handler(
   req: NextApiRequest,
@@ -22,7 +34,28 @@ export default async function handler(
     buildNextAuthOptions(req, res),
   )
 
-  return res.json({
-    session,
-  }) // API resolved without sending a response for /api/users/time-intervals, this may result in stalled requests.
+  if (!session) {
+    return res.status(401).end()
+  }
+
+  // parse dispara um erro caso a tipagem seja diferente do schema. Podemos usar o safeParse
+  const { intervals } = timeIntervalsBodySchema.parse(req.body)
+
+  // sqlite não suporta inserções múltiplas no banco
+  // await prisma.userTimeInterval.createMany
+
+  await Promise.all(
+    intervals.map((interval) => {
+      return prisma.userTimeInterval.create({
+        data: {
+          week_day: interval.weekDay,
+          time_start_in_minutes: interval.startTimeInMinutes,
+          time_end_in_minutes: interval.endTimeInMinutes,
+          user_id: session.user?.id,
+        },
+      })
+    }),
+  )
+
+  return res.status(201).end()
 }
