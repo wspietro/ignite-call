@@ -12,41 +12,52 @@ import {
 } from './styles'
 
 export function Calendar() {
-  const [currentDate, setCurrentDate] = useState(() => {
+  const [currentMonthAndYearDate, setCurrentMonthAndYearDate] = useState(() => {
     // só queremos mes e ano no momento, por isso dia 1
     // fn retorna o valor inicial
+    // date = dia, day = dia da semana
     return dayjs().set('date', 1)
   })
 
   function handlePreviousMonth() {
     // dayjs
-    const previousMonthDate = currentDate.subtract(1, 'month')
+    const previousMonthDate = currentMonthAndYearDate.subtract(1, 'month')
 
-    setCurrentDate(previousMonthDate)
+    setCurrentMonthAndYearDate(previousMonthDate)
   }
 
   function handleNextMonth() {
     // dayjs
-    const nextMonthDate = currentDate.add(1, 'month')
+    const nextMonthDate = currentMonthAndYearDate.add(1, 'month')
 
-    setCurrentDate(nextMonthDate)
+    setCurrentMonthAndYearDate(nextMonthDate)
   }
 
   const shortWeekDay = getWeekDays({ short: true })
 
   // dayjs
-  const currentMonth = currentDate.format('MMMM')
-  const currentYear = currentDate.format('YYYY')
+  const currentMonth = currentMonthAndYearDate.format('MMMM')
+  const currentYear = currentMonthAndYearDate.format('YYYY')
 
   const calendarWeeks = useMemo(() => {
     const daysInMonthArray = Array.from({
-      length: currentDate.daysInMonth(),
+      length: currentMonthAndYearDate.daysInMonth(),
     }).map((_, i) => {
-      return currentDate.set('date', i + 1)
+      return currentMonthAndYearDate.set('date', i + 1) // array com os dias do mês
     })
 
-    return daysInMonthArray
-  }, [currentDate])
+    const firstWeekDay = currentMonthAndYearDate.get('day') // retorna dia da semana 0-6
+
+    const previousMonthFillArray = Array.from({
+      length: firstWeekDay,
+    })
+      .map((_, i) => {
+        return currentMonthAndYearDate.subtract(i + 1, 'day') // array com os últimas dias do mês anterior
+      })
+      .reverse()
+
+    return [...previousMonthFillArray, ...daysInMonthArray]
+  }, [currentMonthAndYearDate])
 
   console.log(calendarWeeks)
 
