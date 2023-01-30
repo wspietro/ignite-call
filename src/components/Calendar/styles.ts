@@ -1,4 +1,5 @@
 import { styled, Text } from '@ignite-ui/react'
+import { transform } from 'typescript'
 
 export const CalendarContainer = styled('div', {
   display: 'flex',
@@ -15,6 +16,7 @@ export const CalendarHeader = styled('div', {
 
 export const CalendarTitle = styled(Text, {
   fontWeight: '$medium',
+  textTransform: 'capitalize',
 
   span: {
     color: '$gray200',
