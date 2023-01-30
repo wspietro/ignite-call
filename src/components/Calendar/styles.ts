@@ -1,5 +1,4 @@
 import { styled, Text } from '@ignite-ui/react'
-import { transform } from 'typescript'
 
 export const CalendarContainer = styled('div', {
   display: 'flex',
