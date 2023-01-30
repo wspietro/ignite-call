@@ -56,7 +56,22 @@ export function Calendar() {
       })
       .reverse()
 
-    return [...previousMonthFillArray, ...daysInMonthArray]
+    const lastDayInCurrentMonth = currentMonthAndYearDate.endOf('month')
+    const lastWeekDay = lastDayInCurrentMonth.endOf('month').get('day')
+
+    const nextMonthFillArray = Array.from({
+      length: 7 - (lastWeekDay + 1),
+    }).map((_, i) => {
+      return lastDayInCurrentMonth.add(i + 1, 'day') // array com os dias do mês seguinte
+    })
+
+    const calendarDays = [
+      ...previousMonthFillArray,
+      ...daysInMonthArray,
+      ...nextMonthFillArray,
+    ]
+
+    return calendarDays
   }, [currentMonthAndYearDate])
 
   console.log(calendarWeeks)
