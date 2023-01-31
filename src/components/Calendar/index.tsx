@@ -145,7 +145,7 @@ export function Calendar({ onDateSelected, selectedDate }: CalendarProps) {
                   return (
                     <td key={date.toString()}>
                       <CalendarDay
-                        onClick={() => onDateSelected(date.toDate())}
+                        onClick={() => onDateSelected(date.toDate())} // não é mais um objeto dayjs, data em api js
                         disabled={disabled}
                       >
                         {date.get('date')}
