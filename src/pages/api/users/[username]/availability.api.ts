@@ -36,7 +36,7 @@ export default async function handle(
 
   // validacao se a data não é passada
   if (isPastDate) {
-    return res.json({ availability: [] })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
   // TimeInterval (intervalo de tempo disponivel pelo usuário)
@@ -50,7 +50,7 @@ export default async function handle(
   })
 
   if (!userAvailability) {
-    return res.json({ availability: [] })
+    return res.json({ possibleTimes: [], availableTimes: [] })
   }
 
   // salvamos em minutos, converter em horas
