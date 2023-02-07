@@ -49,13 +49,30 @@ export default async function handle(
   )
 
   // precisamos de mysql para raw sql
-  const blockedDatesRaw = await prisma.$queryRaw`
-    SELECT * 
+  // traz o dia que temos schedulings e a quantidade de schedulinds
+  // verificacao entre total de horarios ocupados e total de horarios disponiveis
+  // o dia da semana em sql começa em 1 (domingo)
+  // retornando apenas dias que tem horarios ocupado >= a horarios disponiveis no dia
+  const blockedDatesRaw: Array<{ date: number }> = await prisma.$queryRaw`
+    SELECT
+      EXTRACT(DAY FROM S.date) AS date,
+      COUNT(S.date) AS amount,
+      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60) AS size
+
     FROM schedulings S
 
-    WHERE S.user_id = ${user.id}
-      AND DATE_FORMAT(S.date, "%Y-%m") = ${`${year}-${month}`} 
-  `
+    LEFT JOIN user_time_intervals UTI
+      on UTI.week_day = WEEKDAY(DATE_ADD(S.date, INTERVAL 1 DAY))
 
-  return res.json({ blockedWeekDays, blockedDatesRaw })
+    WHERE S.user_id = ${user.id}
+      AND DATE_FORMAT(S.date, "%Y-%m") = ${`${year}-${month}`}
+
+    GROUP BY EXTRACT(DAY FROM S.date),
+      ((UTI.time_end_in_minutes - UTI.time_start_in_minutes) / 60)
+
+      HAVING amount >= size 
+  `
+  const blockedDates = blockedDatesRaw.map((item) => item.date)
+
+  return res.json({ blockedWeekDays, blockedDates })
 }
