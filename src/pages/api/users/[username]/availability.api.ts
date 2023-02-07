@@ -2,7 +2,6 @@
 import dayjs from 'dayjs'
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../../lib/prisma'
-import _difference from 'lodash/difference'
 
 export default async function handle(
   req: NextApiRequest,
@@ -82,12 +81,22 @@ export default async function handle(
     },
   })
 
-  const blockedTimeArray = blockedTimes.map((blockedTime) =>
-    blockedTime.date.getHours(),
-  )
+  // const blockedTimeArray = blockedTimes.map((blockedTime) =>
+  //   blockedTime.date.getHours(),
+  // )
 
-  // lowdash
-  const availableTimes = _difference(possibleTimes, blockedTimeArray)
+  // // lowdash
+  // const availableTimes = _difference(possibleTimes, blockedTimeArray)
+
+  const availableTimes = possibleTimes.filter((time) => {
+    const isTimeBlocked = blockedTimes.some(
+      (blockedTime) => blockedTime.date.getHours() === time,
+    )
+
+    const isTimeInPast = referenceDate.set('hour', time).isBefore(new Date())
+
+    return !isTimeBlocked && !isTimeInPast
+  })
 
   return res.json({ possibleTimes, availableTimes })
 }
