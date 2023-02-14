@@ -38,6 +38,7 @@ export default function Document() {
   )
 }
 
+// eslint-disable-next-line no-lone-blocks
 {
   /* Index html do meu projeto. Apenas coisa que quero em todos meus arquivos/páginas */
 }
